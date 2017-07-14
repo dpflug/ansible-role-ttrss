@@ -1,0 +1,20 @@
+---
+# defaults file for MicroJoe.ttrss
+ttrss_repository: https://git.tt-rss.org/git/tt-rss.git
+
+ttrss_base: /var/www/ttrss
+
+ttrss_user: ttrss
+ttrss_group: www-data
+
+ttrss_db_user: ttrss
+ttrss_db_password: ttrss
+ttrss_db_name: ttrss
+
+nginx_server_name: ttrss.localhost
+nginx_filename: ttrss-{{ nginx_server_name }}
+
+letsencrypt_wellknown: /var/www/letsencrypt
+letsencrypt_activate: false
+letsencrypt_https: false
+letsencrypt_domain: "{{ nginx_server_name }}"

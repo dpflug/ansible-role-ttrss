@@ -1,0 +1,98 @@
+---
+# tasks file for MicroJoe.ttrss
+
+
+- name: Ensure user exists
+  user:
+    name: "{{ ttrss_user }}"
+
+- name: Install dependencies
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-psycopg2
+    - postgresql
+    - php-pgsql
+    - php-curl
+
+- name: Create ttrss base directory
+  file:
+    path: "{{ ttrss_base }}"
+    state: directory
+    owner: "{{ ttrss_user }}"
+    group: "{{ ttrss_group }}"
+
+- name: Clone upstream git repository
+  become: yes
+  become_user: "{{ ttrss_user }}"
+  git:
+    repo: "{{ ttrss_repository }}"
+    dest: "{{ ttrss_base }}"
+  register: git_updated
+
+# PostgreSQL commands
+
+- name: Create postgresql user
+  become: yes
+  become_user: postgres
+  postgresql_user:
+    name: "{{ ttrss_db_user }}"
+    password: "{{ ttrss_db_password }}"
+
+- name: Create postgresql database
+  become: yes
+  become_user: postgres
+  postgresql_db:
+    name: "{{ ttrss_db_name }}"
+    owner: "{{ ttrss_db_user }}"
+    encoding: UTF-8
+    template: template0
+
+# TODO: We currently have to remove the config.php file and enter the config
+# by hand in order to initialize the SQL database
+
+- name: Install ttrss configuration file
+  template:
+    src: templates/config.php.j2
+    dest: "{{ ttrss_base }}/config.php"
+    owner: ttrss
+    group: www-data
+
+- name: Set access for writeable directories
+  file:
+    path: "{{ ttrss_base }}/{{ item }}"
+    state: directory
+    mode: 0775
+    owner: "{{ ttrss_user }}"
+    group: "{{ ttrss_group }}"
+  with_items:
+    - cache/images
+    - cache/upload
+    - cache/export
+    - cache/js
+    - feed-icons
+    - lock
+
+- name: Install nginx configuration file {{ nginx_filename }}
+  template:
+    src: templates/nginx.j2
+    dest: /etc/nginx/sites-available/{{ nginx_filename }}
+    owner: root
+    group: root
+  notify: restart nginx
+
+# Install update feed systemd service
+
+- name: Install systemd update service
+  template:
+    src: templates/ttrss-update.service.j2
+    dest: /etc/systemd/system/ttrss-update.service
+    mode: 0664
+
+- name: Enable systemd update service
+  systemd:
+    name: ttrss-update
+    state: started
+    enabled: yes
+    daemon_reload: yes

@@ -1,0 +1,20 @@
+galaxy_info:
+  author: Romain Porte
+  description: TinyTinyRSS role for nginx with letsencrypt support
+
+  license: MIT
+
+  min_ansible_version: 2.0
+
+  platforms:
+  - name: Debian
+    versions:
+    - stretch
+
+  galaxy_tags:
+    - tt-rss
+    - ttrss
+    - nginx
+    - letsencrypt
+
+dependencies: []
