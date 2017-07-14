@@ -1,6 +1,8 @@
 TT-RSS
 ======
 
+[![Build Status](https://travis-ci.org/MicroJoe/ansible-role-ttrss.svg?branch=master)](https://travis-ci.org/MicroJoe/ansible-role-ttrss)
+
 TinyTinyRSS role for nginx with letsencrypt support.
 
 Requirements
