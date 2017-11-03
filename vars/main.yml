@@ -1,2 +1,3 @@
 ---
 # vars file for MicroJoe.ttrss
+nginx_filename: ttrss-{{ nginx_server_name }}

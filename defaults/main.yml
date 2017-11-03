@@ -12,7 +12,6 @@ ttrss_db_password: ttrss
 ttrss_db_name: ttrss
 
 nginx_server_name: ttrss.localhost
-nginx_filename: ttrss-{{ nginx_server_name }}
 
 letsencrypt_wellknown: /var/www/letsencrypt
 letsencrypt_activate: false
