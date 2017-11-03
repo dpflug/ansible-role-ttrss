@@ -5,6 +5,8 @@
 - name: Ensure user exists
   user:
     name: "{{ ttrss_user }}"
+    group: "{{ ttrss_group }}"
+    home: "{{ ttrss_home }}"
 
 - name: Install dependencies
   apt:
@@ -58,21 +60,6 @@
     dest: "{{ ttrss_base }}/config.php"
     owner: ttrss
     group: www-data
-
-- name: Set access for writeable directories
-  file:
-    path: "{{ ttrss_base }}/{{ item }}"
-    state: directory
-    mode: 0775
-    owner: "{{ ttrss_user }}"
-    group: "{{ ttrss_group }}"
-  with_items:
-    - cache/images
-    - cache/upload
-    - cache/export
-    - cache/js
-    - feed-icons
-    - lock
 
 - name: Install nginx configuration file {{ nginx_filename }}
   template:
