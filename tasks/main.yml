@@ -82,6 +82,22 @@
     group: root
   notify: restart nginx
 
+- name: Verify nginx configuration
+  command: nginx -t
+  changed_when: false
+
+# php-fpm
+
+- name: Install php-fpm pool configuration file
+  template:
+    src: templates/php-fpm.conf
+    dest: /etc/php/7.0/fpm/pool.d/ttrss.conf
+  notify: restart php-fpm
+
+- name: Verify php-fpm configuration
+  command: php-fpm7.0 --test
+  changed_when: false
+
 # Install update feed systemd service
 
 - name: Install systemd update service
