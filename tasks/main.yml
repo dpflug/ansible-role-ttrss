@@ -41,6 +41,7 @@
   postgresql_user:
     name: "{{ ttrss_db_user }}"
     password: "{{ ttrss_db_password }}"
+    encrypted: yes
 
 - name: Create postgresql database
   become: yes
@@ -78,11 +79,11 @@
 - name: Install php-fpm pool configuration file
   template:
     src: templates/php-fpm.conf
-    dest: /etc/php/7.0/fpm/pool.d/ttrss.conf
-  notify: restart php-fpm
+    dest: /etc/php/7.2/fpm/pool.d/ttrss.conf
+#  notify: restart php-fpm
 
 - name: Verify php-fpm configuration
-  command: php-fpm7.0 --test
+  command: php-fpm7.2 --test
   changed_when: false
 
 # Install update feed systemd service
